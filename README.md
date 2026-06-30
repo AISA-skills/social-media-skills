@@ -9,6 +9,9 @@ Each top-level directory is one self-contained skill bundle with a
 `SKILL.md`, optional human-facing `README.md`, and supporting scripts.
 One `AISA_API_KEY` covers AIsa-powered skills.
 
+## Optional Hermes Tweet Companion
+
+For teams standardizing on Hermes Agent, [Hermes Tweet](https://github.com/Xquik-dev/hermes-tweet) is a native X/Twitter plugin that can sit alongside the AIsa social skills. Use it when a Hermes workflow needs current X/Twitter exploration or read context before handing work to the catalog's broader social intelligence skills.
 ## Review Note
 
 This PR expands the catalog to 41 top-level skills after removing only same-function aliases and repackages. Subset skills are intentionally retained as separate discovery and entry points. The merge analysis is in [SKILL_DEDUP_ANALYSIS.md](./SKILL_DEDUP_ANALYSIS.md).
