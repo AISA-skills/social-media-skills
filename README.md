@@ -11,7 +11,7 @@ One `AISA_API_KEY` covers AIsa-powered skills.
 
 ## Review Note
 
-This PR expands the catalog to 41 top-level skills after removing only same-function aliases and repackages. Subset skills are intentionally retained as separate discovery and entry points. The merge analysis is in [SKILL_DEDUP_ANALYSIS.md](./SKILL_DEDUP_ANALYSIS.md).
+This catalog contains 42 top-level skills after removing only same-function aliases and repackages. Subset skills are intentionally retained as separate discovery and entry points. The merge analysis is in [SKILL_DEDUP_ANALYSIS.md](./SKILL_DEDUP_ANALYSIS.md).
 
 ## Skills
 
@@ -25,6 +25,7 @@ This PR expands the catalog to 41 top-level skills after removing only same-func
 | [aisa-youtube-search](./aisa-youtube-search/) | Search YouTube videos, channels, and playlists through the AIsa YouTube relay with one API key. Use when the user asks for YouTube discovery, query expansion, or pagination without managing Google credentials. |
 | [cn-llm](./cn-llm/) | China LLM Gateway - Unified interface for Chinese LLMs including Qwen, DeepSeek, GLM, Baichuan. OpenAI compatible, one API Key for all models. Use when: the user needs model routing, provider setup, or Chinese LLM acc... |
 | [crypto-market-data](./crypto-market-data/) | Query real-time and historical cryptocurrency market data via CoinGecko — simple prices, coin details, historical charts, OHLC candles, token prices by contract address, market-cap rankings, exchange data and tickers,... |
+| [kol-creator-discovery](./kol-creator-discovery/) | Find a creator's contact email, discover similar YouTube or TikTok creators, enrich their contact details, and produce an outreach-ready table through AIsa WaveInflu APIs. |
 | [last30days](./last30days/) | Research the last 30 days across Reddit, X, YouTube, TikTok, Instagram, Hacker News, Polymarket, GitHub, and grounded web search. Returns a ranked, clustered brief with citations. Use when the task needs recent social... |
 | [last30days-zh](./last30days-zh/) | 聚合最近 30 天的 Reddit、X/Twitter、YouTube、TikTok、Instagram、Hacker News、Polymarket 和 web search 结果. Use when: the user needs recent multi-source research across the last 30 days. |
 | [llm-router](./llm-router/) | Unified LLM Gateway - One API for 70+ AI models. Route to GPT, Claude, Gemini, Qwen, Deepseek, Grok and more with a single API key. Use when: the user needs model routing, provider setup, or Chinese LLM access guidance. |
