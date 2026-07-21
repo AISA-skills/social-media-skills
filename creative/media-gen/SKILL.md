@@ -1,9 +1,29 @@
 ---
 name: media-gen
-description: "Generate images and videos with AIsa. Four image models (Google Gemini 3 Pro Image, Alibaba Wan 2.7 image + image-pro, ByteDance Seedream) and four Wan video variants (wan2.6/2.7 × t2v/i2v). One API key; the client routes each model to the correct endpoint automatically."
+description: Generate images and videos with AIsa. Four image models (Google Gemini 3 Pro Image, Alibaba Wan 2.7 image + image-pro, ByteDance Seedream) and four Wan video variants (wan2.6/2.7 × t2v/i2v). One API key; the client routes each model to the correct endpoint automatically.
 license: MIT
-compatibility: "Works with any agentskills.io-compatible harness — Claude Code, Claude, OpenCode, Cursor, Codex, Gemini CLI, OpenClaw, Hermes, Goose, and others. Requires Python 3, a POSIX shell, and AISA_API_KEY."
-metadata: {"aisa": {"emoji": "🎬", "homepage": "https://aisa.one", "requires": {"bins": ["python3", "curl"], "env": ["AISA_API_KEY"]}, "primaryEnv": "AISA_API_KEY", "harnesses": ["claude-code", "claude", "opencode", "cursor", "codex", "gemini-cli", "openclaw", "hermes", "goose"]}}
+compatibility: Works with any agentskills.io-compatible harness — Claude Code, Claude, OpenCode, Cursor, Codex, Gemini CLI, OpenClaw, Hermes, Goose, and others. Requires Python 3, a POSIX shell, and AISA_API_KEY.
+metadata:
+  aisa:
+    emoji: 🎬
+    homepage: https://aisa.one
+    requires:
+      bins:
+      - python3
+      - curl
+      env:
+      - AISA_API_KEY
+    primaryEnv: AISA_API_KEY
+    harnesses:
+    - claude-code
+    - claude
+    - opencode
+    - cursor
+    - codex
+    - gemini-cli
+    - openclaw
+    - hermes
+    - goose
 ---
 # Media Gen 🎬
 

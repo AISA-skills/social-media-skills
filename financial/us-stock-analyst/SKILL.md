@@ -1,7 +1,6 @@
 ---
 name: us-stock-analyst
 description: 'Professional US stock analysis with financial data, news, social sentiment, and multi-model AI. Comprehensive reports at $0.02-0.10 per analysis. Use when: the user needs market data, stock analysis, watchlists, or portfolio workflows.'
-version: 1.0.1
 compatibility: Designed for Agent Skills compatible clients such as OpenClaw, Claude Code, Hermes, and GitHub-backed skill catalogs. Requires system binaries curl, python3, environment variables AISA_API_KEY and internet access to api.aisa.one.
 metadata:
   aisa:
@@ -14,6 +13,7 @@ metadata:
       - AISA_API_KEY
     primaryEnv: AISA_API_KEY
     compatibility: Designed for Agent Skills compatible clients such as OpenClaw, Claude Code, Hermes, and GitHub-backed skill catalogs. Requires system binaries curl, python3, environment variables AISA_API_KEY and internet access to api.aisa.one.
+    version: 1.0.1
 ---
 
 # US Stock Analyst 📈

@@ -1,34 +1,32 @@
 ---
 name: trend-forecast
-description: >
-  Multi-signal trend forecasting for autonomous agents. Combines prediction market
-  odds, Twitter/X social sentiment, news velocity, and stock market data into a
-  unified trend analysis with confidence scoring. Powered by AIsa — one API key,
-  five data streams.
-version: 1.0.0
-triggers:
-  - "forecast trend"
-  - "predict what happens with"
-  - "trend analysis for"
-  - "what's the outlook on"
-  - "will X happen"
-  - "what are the odds of"
-  - "sentiment analysis on"
-  - "market outlook for"
-tools:
-  - bash
-  - read
-  - write
+description: 'Multi-signal trend forecasting for autonomous agents. Combines prediction market odds, Twitter/X social sentiment, news velocity, and stock market data into a unified trend analysis with confidence scoring. Powered by AIsa — one API key, five data streams.
+
+  '
 metadata:
   openclaw:
-    emoji: "📈"
+    emoji: 📈
     requires:
       bins:
-        - curl
-        - python3
+      - curl
+      - python3
       env:
-        - AISA_API_KEY
+      - AISA_API_KEY
     primaryEnv: AISA_API_KEY
+    version: 1.0.0
+    triggers:
+    - forecast trend
+    - predict what happens with
+    - trend analysis for
+    - what's the outlook on
+    - will X happen
+    - what are the odds of
+    - sentiment analysis on
+    - market outlook for
+    tools:
+    - bash
+    - read
+    - write
 ---
 
 # Trend Forecast

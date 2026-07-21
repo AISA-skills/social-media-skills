@@ -1,7 +1,6 @@
 ---
 name: aisa-twitter-post-engage
 description: Search X/Twitter profiles, tweets, trends, and approved engagement actions through the AIsa relay. Use when the user asks for Twitter/X research, posting, likes, follows, or related workflows without sharing passwords.
-version: 1.0.3
 license: Apache-2.0
 compatibility: Designed for Agent Skills compatible clients such as OpenClaw, Claude Code, Hermes, and GitHub-backed skill catalogs. Requires system binaries python3, environment variables AISA_API_KEY and internet access to api.aisa.one.
 metadata:
@@ -14,6 +13,7 @@ metadata:
       - AISA_API_KEY
     primaryEnv: AISA_API_KEY
     compatibility: Designed for Agent Skills compatible clients such as OpenClaw, Claude Code, Hermes, and GitHub-backed skill catalogs. Requires system binaries python3, environment variables AISA_API_KEY and internet access to api.aisa.one.
+    version: 1.0.3
 ---
 
 # AIsa Twitter Post Engage

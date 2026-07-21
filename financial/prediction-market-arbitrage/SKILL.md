@@ -1,9 +1,29 @@
 ---
 name: prediction-market-arbitrage
-description: "Find and analyze arbitrage opportunities across prediction markets like Polymarket and Kalshi."
+description: Find and analyze arbitrage opportunities across prediction markets like Polymarket and Kalshi.
 license: MIT
-compatibility: "Works with any agentskills.io-compatible harness — Claude Code, Claude, OpenCode, Cursor, Codex, Gemini CLI, OpenClaw, Hermes, Goose, and others. Requires Python 3, a POSIX shell, and AISA_API_KEY."
-metadata: {"aisa": {"emoji": "⚖️", "homepage": "https://aisa.one", "requires": {"bins": ["curl", "python3"], "env": ["AISA_API_KEY"]}, "primaryEnv": "AISA_API_KEY", "harnesses": ["claude-code", "claude", "opencode", "cursor", "codex", "gemini-cli", "openclaw", "hermes", "goose"]}}
+compatibility: Works with any agentskills.io-compatible harness — Claude Code, Claude, OpenCode, Cursor, Codex, Gemini CLI, OpenClaw, Hermes, Goose, and others. Requires Python 3, a POSIX shell, and AISA_API_KEY.
+metadata:
+  aisa:
+    emoji: ⚖️
+    homepage: https://aisa.one
+    requires:
+      bins:
+      - curl
+      - python3
+      env:
+      - AISA_API_KEY
+    primaryEnv: AISA_API_KEY
+    harnesses:
+    - claude-code
+    - claude
+    - opencode
+    - cursor
+    - codex
+    - gemini-cli
+    - openclaw
+    - hermes
+    - goose
 ---
 # Cross-Platform Prediction Market Arbitrage ⚖️
 
