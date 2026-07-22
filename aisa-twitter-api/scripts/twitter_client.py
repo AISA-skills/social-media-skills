@@ -27,6 +27,52 @@ REQUEST_TIMEOUT = 60
 TWITTER_MAX_WEIGHT = 280
 TWITTER_URL_WEIGHT = 23
 URL_PATTERN = re.compile(r"https?://\S+", re.IGNORECASE)
+XQUIK_API_BASE = "https://xquik.com/api/v1"
+
+
+def compact_params(params: Dict[str, Any]) -> Dict[str, Any]:
+    """Drop empty query values before encoding request parameters."""
+    return {k: v for k, v in params.items() if v not in (None, "")}
+
+
+def print_result(result: Dict[str, Any]) -> None:
+    """Print JSON with a Unicode-safe fallback."""
+    output = json.dumps(result, indent=2, ensure_ascii=False)
+    try:
+        print(output)
+    except UnicodeEncodeError:
+        print(json.dumps(result, indent=2, ensure_ascii=True))
+
+
+def tweet_author_name(tweet: Dict[str, Any]) -> Optional[str]:
+    """Extract a stable author handle from supported response shapes."""
+    author = tweet.get("author")
+    if isinstance(author, dict):
+        username = author.get("username") or author.get("userName")
+        if username:
+            return str(username)
+    username = tweet.get("username") or tweet.get("userName")
+    if username:
+        return str(username)
+    return None
+
+
+def http_error_result(error: urllib.error.HTTPError) -> Dict[str, Any]:
+    """Return a consistently failing result for every HTTP error response."""
+    error_body = error.read().decode("utf-8", errors="replace")
+    try:
+        parsed = json.loads(error_body)
+    except json.JSONDecodeError:
+        parsed = None
+
+    if isinstance(parsed, dict):
+        parsed["success"] = False
+        return parsed
+
+    return {
+        "success": False,
+        "error": {"code": str(error.code), "message": error_body},
+    }
 
 
 class TwitterClient:
@@ -53,9 +99,7 @@ class TwitterClient:
         url = f"{self.BASE_URL}{endpoint}"
 
         if params:
-            query_string = urllib.parse.urlencode(
-                {k: v for k, v in params.items() if v is not None}
-            )
+            query_string = urllib.parse.urlencode(compact_params(params))
             url = f"{url}?{query_string}"
 
         headers = {
@@ -74,11 +118,7 @@ class TwitterClient:
             with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as response:
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
-            error_body = e.read().decode("utf-8")
-            try:
-                return json.loads(error_body)
-            except json.JSONDecodeError:
-                return {"success": False, "error": {"code": str(e.code), "message": error_body}}
+            return http_error_result(e)
         except urllib.error.URLError as e:
             return {"success": False, "error": {"code": "NETWORK_ERROR", "message": str(e.reason)}}
 
@@ -211,6 +251,88 @@ class TwitterClient:
         return self._request("GET", "/twitter/spaces/detail", params={"space_id": space_id})
 
 
+class XquikClient:
+    """Xquik API client for optional Twitter/X read workflows."""
+
+    def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None):
+        """Initialize the client with an Xquik API key."""
+        self.api_key = api_key or os.environ.get("XQUIK_API_KEY")
+        if not self.api_key:
+            raise ValueError(
+                "XQUIK_API_KEY is required for xquik-search. Set it via environment variable."
+            )
+        self.base_url = (base_url or os.environ.get("XQUIK_API_BASE") or XQUIK_API_BASE).rstrip("/")
+
+    def _request(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Make an HTTP request to the Xquik API."""
+        query_string = urllib.parse.urlencode(compact_params(params))
+        url = f"{self.base_url}{endpoint}"
+        if query_string:
+            url = f"{url}?{query_string}"
+
+        headers = {
+            "x-api-key": self.api_key,
+            "Accept": "application/json",
+            "User-Agent": "AIsa-Twitter-Xquik/1.0",
+        }
+
+        req = urllib.request.Request(url, headers=headers, method="GET")
+
+        try:
+            with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            return http_error_result(e)
+        except urllib.error.URLError as e:
+            return {"success": False, "error": {"code": "NETWORK_ERROR", "message": str(e.reason)}}
+
+    def search(
+        self,
+        query: str,
+        query_type: str = "Latest",
+        cursor: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """Search tweets through Xquik and return the native response."""
+        return self._request(
+            "/x/tweets/search",
+            params={"q": query, "queryType": query_type, "cursor": cursor, "limit": limit},
+        )
+
+    def search_summary(
+        self,
+        query: str,
+        query_type: str = "Latest",
+        cursor: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """Return a compact agent-friendly summary of Xquik search results."""
+        result = self.search(query, query_type, cursor, limit)
+        if result.get("success") is False or "error" in result:
+            return result
+        tweets = result.get("tweets", [])
+        if not isinstance(tweets, list):
+            return result
+        return {
+            "success": True,
+            "source": "xquik",
+            "count": len(tweets),
+            "has_next_page": result.get("has_next_page", False),
+            "next_cursor": result.get("next_cursor", ""),
+            "tweets": [
+                {
+                    "id": tweet.get("id"),
+                    "text": tweet.get("text"),
+                    "author": tweet_author_name(tweet),
+                    "created_at": tweet.get("createdAt") or tweet.get("created_at"),
+                    "url": tweet.get("url"),
+                }
+                for tweet in tweets
+                if isinstance(tweet, dict)
+            ],
+        }
+
+
 
 def main():
     """Main CLI entry point."""
@@ -262,6 +384,17 @@ def main():
     p.add_argument("--query", "-q", required=True)
     p.add_argument("--type", "-t", choices=["Latest", "Top"], default="Latest")
     p.add_argument("--cursor", help="Pagination cursor")
+
+    p = subparsers.add_parser("xquik-search", help="Search tweets through Xquik")
+    p.add_argument("--query", "-q", required=True)
+    p.add_argument("--type", "-t", choices=["Latest", "Top"], default="Latest")
+    p.add_argument("--cursor", help="Pagination cursor")
+    p.add_argument("--limit", type=int, help="Maximum tweets to return")
+    p.add_argument(
+        "--raw",
+        action="store_true",
+        help="Print the native Xquik response instead of an agent summary",
+    )
 
     p = subparsers.add_parser("user-search", help="Search users")
     p.add_argument("--query", "-q", required=True)
@@ -337,7 +470,7 @@ def main():
         sys.exit(1)
 
     try:
-        client = TwitterClient()
+        client = XquikClient() if args.command == "xquik-search" else TwitterClient()
     except ValueError as e:
         print(json.dumps({"success": False, "error": {"code": "AUTH_ERROR", "message": str(e)}}))
         sys.exit(1)
@@ -365,6 +498,11 @@ def main():
         result = client.check_follow_relationship(args.source, args.target)
     elif cmd == "search":
         result = client.search(args.query, args.type, getattr(args, "cursor", None))
+    elif cmd == "xquik-search":
+        if args.raw:
+            result = client.search(args.query, args.type, args.cursor, args.limit)
+        else:
+            result = client.search_summary(args.query, args.type, args.cursor, args.limit)
     elif cmd == "user-search":
         result = client.user_search(args.query, getattr(args, "cursor", None))
     elif cmd == "trends":
@@ -398,12 +536,8 @@ def main():
     elif cmd == "space-detail":
         result = client.space_detail(args.space_id)
 
-    if result:
-        output = json.dumps(result, indent=2, ensure_ascii=False)
-        try:
-            print(output)
-        except UnicodeEncodeError:
-            print(json.dumps(result, indent=2, ensure_ascii=True))
+    if result is not None:
+        print_result(result)
         sys.exit(0 if result.get("success", True) else 1)
 
 

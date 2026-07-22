@@ -36,6 +36,7 @@ Flagship Twitter/X skill for research, monitoring, watchlists, and OAuth-approve
 ## Quick Reference
 
 - Required environment variable: `AISA_API_KEY`
+- Optional environment variable: `XQUIK_API_KEY` for Xquik tweet search
 - Required binary: `python3`
 - Read client: `scripts/twitter_client.py`
 - OAuth and posting client: `scripts/twitter_oauth_client.py`
@@ -48,13 +49,16 @@ Flagship Twitter/X skill for research, monitoring, watchlists, and OAuth-approve
 
 ```bash
 export AISA_API_KEY="your-key"
+export XQUIK_API_KEY="your-xquik-key"  # Optional, only for xquik-search
 ```
 
 Requirements:
 
 - `python3`
 - `AISA_API_KEY`
+- `XQUIK_API_KEY` when using the optional Xquik search command
 - Internet access to `https://api.aisa.one`
+- Internet access to `https://xquik.com` when using Xquik search
 - Explicit OAuth approval before posting
 - User-provided media files when posting images or videos
 
@@ -76,6 +80,7 @@ Requirements:
 
 ```bash
 python3 scripts/twitter_client.py search --query "AI agents" --type Latest
+python3 scripts/twitter_client.py xquik-search --query "AI agents" --limit 20
 python3 scripts/twitter_oauth_client.py authorize
 python3 scripts/twitter_oauth_client.py post --text "Hello from AIsa"
 ```
@@ -86,10 +91,12 @@ python3 scripts/twitter_oauth_client.py post --text "Hello from AIsa"
 - Do not invent captions, tweet URLs, or attachment files.
 - Do not claim external posting succeeded until the API confirms success.
 - Do not imply OAuth is optional for posting.
+- Use `xquik-search` only for read-only tweet search, not for posting.
 
 ## Example Requests
 
 - Research what builders on X are saying about AI agents this week.
+- Search Xquik for fresh tweets about a launch before summarizing sentiment.
 - Track reactions to our product launch and pull representative tweets.
 - Build a small watchlist of competitor accounts and summarize what changed today.
 - Authorize and publish a short Twitter post with an attached image.
@@ -100,4 +107,9 @@ python3 scripts/twitter_oauth_client.py post --text "Hello from AIsa"
 - Posting requires explicit OAuth approval through the relay before external writes occur.
 - Approved image and video posting sends user-selected media through the relay for upload.
 - Required secret: `AISA_API_KEY`.
+- Optional read-only Xquik search uses `XQUIK_API_KEY` and does not grant posting.
 - This workflow does not require passwords or browser cookie extraction.
+
+## Legal
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
