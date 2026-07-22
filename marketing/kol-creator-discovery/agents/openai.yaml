@@ -1,4 +1,0 @@
-interface:
-  display_name: "KOL Creator Discovery"
-  short_description: "Find creator emails and similar KOLs with AIsa"
-  default_prompt: "Use $kol-creator-discovery to find this creator’s email and build a table of similar creators with contact emails."
